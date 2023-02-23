@@ -42,6 +42,7 @@ from time import sleep
 from math import atan, pi, atan2
 import numpy as np
 from geometry_msgs.msg import Twist, Vector3
+from std_msgs.msg import String
 from turtlesim.msg import Pose
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rcl_interfaces.msg import ParameterDescriptor
@@ -88,13 +89,14 @@ class Listen(Node):
         self.flag_state_stopped = 0 # This is used to log "STOPPING" only once to debug.
 
         self.declare_parameter("frequency", 100.0, ParameterDescriptor(description="The velocity of the turtle"))
-        self.declare_parameter("tolerance", 0.05, ParameterDescriptor(description="The error tolerance for the waypoint"))
+        # self.declare_parameter("tolerance", 0.05, ParameterDescriptor(description="The error tolerance for the waypoint"))
         self.frequency = self.get_parameter("frequency").get_parameter_value().double_value
-        self.tolerance = self.get_parameter("tolerance").get_parameter_value()._double_value
+        # self.tolerance = self.get_parameter("tolerance").get_parameter_value()._double_value
+        self.speed = String()
 
         # Publishers, Subscribers, Services and Timer
-        self.pub = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
-        self.sub = self.create_subscription(Pose, "turtle1/pose", self.update_pose, 10)
+        self.pub = self.create_publisher(String, "/speed", 10)
+        # self.sub = self.create_subscription(Pose, "turtle1/pose", self.update_pose, 10)
         self.timer = self.create_timer(1.0/self.frequency, self.timer_callback, callback_group = self.cbgroup)
 
 
@@ -108,15 +110,19 @@ class Listen(Node):
             print('  slots : {')
             for slot, value in inference.slots.items():
                 print("    %s : '%s'" % (slot, value))
+                self.speed.data = value # Publish Value value
             print('  }')
             print('}\n')
+            
+            self.pub.publish(self.speed)
+
         else:
             print("Didn't understand the command.\n")
 
     def run(self):
         recorder = None
         wav_file = None
-        print("HALLLO")
+        # print("HALLLO")
 
         try:
             recorder = PvRecorder(device_index=-1, frame_length=self._picovoice.frame_length)
@@ -160,11 +166,11 @@ class Listen(Node):
 
 
 
-    def update_pose(self,data):
-        """
-        Subscribtion topic: turtle1/cmd_vel 
-        """
-        self.pose = data
+    # def update_pose(self,data):
+    #     """
+    #     Subscribtion topic: turtle1/cmd_vel 
+    #     """
+    #     self.pose = data
 
 
     def timer_callback(self):
