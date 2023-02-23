@@ -89,10 +89,12 @@ class Listen(Node):
         self.flag_state_stopped = 0 # This is used to log "STOPPING" only once to debug.
 
         self.declare_parameter("frequency", 100.0, ParameterDescriptor(description="The velocity of the turtle"))
-        # self.declare_parameter("tolerance", 0.05, ParameterDescriptor(description="The error tolerance for the waypoint"))
+        self.declare_parameter("keyword_path", "/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn", ParameterDescriptor(description="The error tolerance for the waypoint"))
         self.frequency = self.get_parameter("frequency").get_parameter_value().double_value
-        # self.tolerance = self.get_parameter("tolerance").get_parameter_value()._double_value
+        self.keyword_path = self.get_parameter("keyword_path").get_parameter_value().string_value
         self.speed = String()
+
+        # print(self.keyword_path)
 
         # Publishers, Subscribers, Services and Timer
         self.pub = self.create_publisher(String, "/speed", 10)
@@ -175,37 +177,16 @@ class Listen(Node):
 
     def timer_callback(self):
         """ 
-        State Machine
+        Timer Callback
         """
 
-        # print("One or more arguments provided to Picovoice is invalid: ")
-
-
-        # class PicovoiceDemo(Thread):
-        #     def __init__(
-        #             self,
-        #             access_key,
-        #             audio_device_index,
-        #             keyword_path,
-        #             context_path,
-        #             porcupine_library_path=None,
-        #             porcupine_model_path=None,
-        #             porcupine_sensitivity=0.5,
-        #             rhino_library_path=None,
-        #             rhino_model_path=None,
-        #             rhino_sensitivity=0.5,
-        #             endpoint_duration_sec=1.,
-        #             require_endpoint=True,
-        #             output_path=None):
-        #         super(PicovoiceDemo, self).__init__()
-
-        
+        # print(f"{self.keyword_path}")
 
         try:
-            # print("fuck")
             self._picovoice = Picovoice(
                 access_key="bz3cScyGLZpi/dcR5/xHDJJ/pCBdswpMGXHL2Djgik7Rn04q54tdYA==",
-                keyword_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn",
+                # keyword_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn",
+                keyword_path=self.keyword_path,
                 wake_word_callback=self._wake_word_callback,
                 context_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/Dog-command_en_linux_v2_1_0.rhn",
                 inference_callback=self._inference_callback,
@@ -223,7 +204,8 @@ class Listen(Node):
             PicovoiceDemo(
                 access_key="bz3cScyGLZpi/dcR5/xHDJJ/pCBdswpMGXHL2Djgik7Rn04q54tdYA==",
                 audio_device_index=-1,
-                keyword_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn",
+                # keyword_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn",
+                keyword_path=self.keyword_path,
                 context_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/Dog-command_en_linux_v2_1_0.rhn",
                 porcupine_library_path=None,
                 porcupine_model_path=None,
