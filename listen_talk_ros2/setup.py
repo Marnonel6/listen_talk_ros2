@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'listen = listen_talk_ros2.listen:main'
+            'listen = listen_talk_ros2.listen:main',
+            'talk = listen_talk_ros2.talk:main'
         ],
     },
 )

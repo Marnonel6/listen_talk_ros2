@@ -27,5 +27,14 @@ def generate_launch_description():
             output='screen',
             # parameters=['keyword_path'],
             # arguments='keyword_path',
+        ),
+
+        Node(
+            package='listen_talk_ros2',
+            executable='talk',
+            name='talk',
+            output='screen',
+            # parameters=['keyword_path'],
+            # arguments='keyword_path',
         )
     ])

@@ -116,7 +116,11 @@ class Listen(Node):
             print('  }')
             print('}\n')
             
+            # TODO PUBLISHES THE COMMAND
             self.pub.publish(self.speed)
+
+
+            # os.system('mpg123 /home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/talk.mp3')
 
         else:
             print("Didn't understand the command.\n")
