@@ -85,8 +85,6 @@ class Listen(Node):
     def __init__(self):
         super().__init__("listen")
 
-        self.cbgroup = ReentrantCallbackGroup()
-
         # self.state = State.RESET # Starts with RESET state
         self.flag_state_stopped = 0 # This is used to log "STOPPING" only once to debug.
 
@@ -94,8 +92,15 @@ class Listen(Node):
         # self.declare_parameter("keyword_path", "/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn", ParameterDescriptor(description="The error tolerance for the waypoint"))
         self.declare_parameter("keyword_path", ament_index_python.get_package_share_directory(
             "listen_talk_ros2")+ "/jarvis_linux.ppn")
+        self.declare_parameter("context_path", ament_index_python.get_package_share_directory(
+            "listen_talk_ros2")+ "/Dog-command_en_linux_v2_1_0.rhn")
+        self.declare_parameter("access_key", "bz3cScyGLZpi/dcR5/xHDJJ/pCBdswpMGXHL2Djgik7Rn04q54tdYA==", ParameterDescriptor(description="The error tolerance for the waypoint"))
+
+
         self.frequency = self.get_parameter("frequency").get_parameter_value().double_value
         self.keyword_path = self.get_parameter("keyword_path").get_parameter_value().string_value
+        self.context_path = self.get_parameter("context_path").get_parameter_value().string_value
+        self.access_key = self.get_parameter("access_key").get_parameter_value().string_value
         self.speed = String()
 
         # print(self.keyword_path)
@@ -103,7 +108,7 @@ class Listen(Node):
         # Publishers, Subscribers, Services and Timer
         self.pub = self.create_publisher(String, "/speed", 10)
         # self.sub = self.create_subscription(Pose, "turtle1/pose", self.update_pose, 10)
-        self.timer = self.create_timer(1.0/self.frequency, self.timer_callback, callback_group = self.cbgroup)
+        self.timer = self.create_timer(1.0/self.frequency, self.timer_callback)
 
 
     def _wake_word_callback(self):
@@ -192,11 +197,12 @@ class Listen(Node):
 
         try:
             self._picovoice = Picovoice(
-                access_key="bz3cScyGLZpi/dcR5/xHDJJ/pCBdswpMGXHL2Djgik7Rn04q54tdYA==",
+                access_key=self.access_key,
                 # keyword_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn",
                 keyword_path=self.keyword_path,
                 wake_word_callback=self._wake_word_callback,
-                context_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/Dog-command_en_linux_v2_1_0.rhn",
+                # context_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/Dog-command_en_linux_v2_1_0.rhn",
+                context_path=self.context_path,
                 inference_callback=self._inference_callback,
                 porcupine_library_path=None,
                 porcupine_model_path=None,
@@ -210,11 +216,12 @@ class Listen(Node):
             self.run()
             
             PicovoiceDemo(
-                access_key="bz3cScyGLZpi/dcR5/xHDJJ/pCBdswpMGXHL2Djgik7Rn04q54tdYA==",
+                access_key=self.access_key,
                 audio_device_index=-1,
                 # keyword_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn",
                 keyword_path=self.keyword_path,
-                context_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/Dog-command_en_linux_v2_1_0.rhn",
+                # context_path="/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/Dog-command_en_linux_v2_1_0.rhn",
+                context_path=self.context_path,
                 porcupine_library_path=None,
                 porcupine_model_path=None,
                 porcupine_sensitivity=0.5,
