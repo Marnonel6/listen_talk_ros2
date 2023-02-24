@@ -57,6 +57,8 @@ from threading import Thread
 from picovoice import *
 from pvrecorder import PvRecorder
 
+import ament_index_python
+
 # Cannot work offline needs to be connected to the internet to convert text to speach, but
 # Can load prewritten .mp3 files when not connected to the internet just use the command below:
 # os.system('mpg123 talk.mp3')
@@ -90,7 +92,9 @@ class Talk(Node):
         # self.flag_state_stopped = 0 # This is used to log "STOPPING" only once to debug.
 
         self.declare_parameter("frequency", 100.0, ParameterDescriptor(description="The velocity of the turtle"))
-        self.declare_parameter("talk_file", "os.system('mpg123 /home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/talk.mp3')", ParameterDescriptor(description="The error tolerance for the waypoint"))
+        # self.declare_parameter("talk_file", "/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/talk.mp3", ParameterDescriptor(description="The error tolerance for the waypoint"))
+        self.declare_parameter("talk_file", ament_index_python.get_package_share_directory(
+            "listen_talk_ros2") + "/German_shepherd_barking.mp3")
         self.frequency = self.get_parameter("frequency").get_parameter_value().double_value
         self.talk_file = self.get_parameter("talk_file").get_parameter_value().string_value
         # self.speed = String()
@@ -113,8 +117,9 @@ class Talk(Node):
         """
         print("got data\n")
         if data.data == "up":
-            print(data.data)
-            os.system('mpg123 /home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/talk.mp3')
+            # os.system('mpg123 /home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/talk.mp3')
+            blabla = 'mpg123' + ' ' + self.talk_file
+            os.system(blabla)
 
 
     def timer_callback(self):

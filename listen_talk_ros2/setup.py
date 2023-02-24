@@ -9,7 +9,7 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml', 'config/jarvis_linux.ppn', 'config/Dog-command_en_linux_v2_1_0.rhn', 'launch/listen_talk.launch.py']),
+        ('share/' + package_name, ['package.xml', 'config/jarvis_linux.ppn', 'config/Dog-command_en_linux_v2_1_0.rhn', 'launch/listen_talk.launch.py', 'config/talk.mp3', 'config/German_shepherd_barking.mp3']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
