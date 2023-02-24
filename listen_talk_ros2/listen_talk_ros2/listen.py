@@ -57,6 +57,8 @@ from threading import Thread
 from picovoice import *
 from pvrecorder import PvRecorder
 
+import ament_index_python
+
 class PicovoiceDemo(Thread):
     def __init__(
             self,
@@ -89,7 +91,9 @@ class Listen(Node):
         self.flag_state_stopped = 0 # This is used to log "STOPPING" only once to debug.
 
         self.declare_parameter("frequency", 100.0, ParameterDescriptor(description="The velocity of the turtle"))
-        self.declare_parameter("keyword_path", "/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn", ParameterDescriptor(description="The error tolerance for the waypoint"))
+        # self.declare_parameter("keyword_path", "/home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/jarvis_linux.ppn", ParameterDescriptor(description="The error tolerance for the waypoint"))
+        self.declare_parameter("keyword_path", ament_index_python.get_package_share_directory(
+            "listen_talk_ros2")+ "/jarvis_linux.ppn")
         self.frequency = self.get_parameter("frequency").get_parameter_value().double_value
         self.keyword_path = self.get_parameter("keyword_path").get_parameter_value().string_value
         self.speed = String()
