@@ -88,9 +88,9 @@ class Listen(Node):
         # self.state = State.RESET # Starts with RESET state
         self.flag_state_stopped = 0 # This is used to log "STOPPING" only once to debug.
 
-        self.declare_parameter("frequency", 100.0, ParameterDescriptor(description="The velocity of the turtle"))
+        self.declare_parameter("frequency", 100.0, ParameterDescriptor(description="Timer callback frequency"))
         self.declare_parameter("keyword_path", ament_index_python.get_package_share_directory(
-            "listen_talk_ros2")+ "/jarvis_linux.ppn")
+            "listen_talk_ros2")+ "/Hey-Willie_en_linux_v2_1_0.ppn")
         self.declare_parameter("context_path", ament_index_python.get_package_share_directory(
             "listen_talk_ros2")+ "/Dog-command_en_linux_v2_1_0.rhn")
         self.declare_parameter("access_key", "bz3cScyGLZpi/dcR5/xHDJJ/pCBdswpMGXHL2Djgik7Rn04q54tdYA==", ParameterDescriptor(description="The error tolerance for the waypoint"))
@@ -100,11 +100,11 @@ class Listen(Node):
         self.keyword_path = self.get_parameter("keyword_path").get_parameter_value().string_value
         self.context_path = self.get_parameter("context_path").get_parameter_value().string_value
         self.access_key = self.get_parameter("access_key").get_parameter_value().string_value
-        self.speed = String()
+        self.voice_command = String()
 
 
         # Publishers, Subscribers, Services and Timer
-        self.pub = self.create_publisher(String, "/speed", 10)
+        self.pub_voice_command = self.create_publisher(String, "/voice_command", 10)
         self.timer = self.create_timer(1.0/self.frequency, self.timer_callback)
 
 
@@ -118,15 +118,12 @@ class Listen(Node):
             print('  slots : {')
             for slot, value in inference.slots.items():
                 print("    %s : '%s'" % (slot, value))
-                self.speed.data = value # Publish Value value
+                self.voice_command.data = value # Set voice command
             print('  }')
             print('}\n')
             
-            # TODO PUBLISHES THE COMMAND
-            self.pub.publish(self.speed)
-
-
-            # os.system('mpg123 /home/marno/Classes/Winter23/Winter_Project/listen_talk_ros/let_it_talk/talk.mp3')
+            # Publish voice command to a topic
+            self.pub_voice_command.publish(self.voice_command)
 
         else:
             print("Didn't understand the command.\n")
@@ -134,7 +131,6 @@ class Listen(Node):
     def run(self):
         recorder = None
         wav_file = None
-        # print("HALLLO")
 
         try:
             recorder = PvRecorder(device_index=-1, frame_length=self._picovoice.frame_length)
