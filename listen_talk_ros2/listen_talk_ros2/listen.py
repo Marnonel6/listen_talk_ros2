@@ -31,32 +31,15 @@ PARAMETERS:
 
 """
 
-from enum import Enum, auto
-from os import ST_APPEND
-import re
 import rclpy
 from rclpy.node import Node
-from std_srvs.srv import Empty
-from turtlesim.srv import TeleportAbsolute, SetPen
-from time import sleep
-from math import atan, pi, atan2
-import numpy as np
-from geometry_msgs.msg import Twist, Vector3
 from std_msgs.msg import String
-from turtlesim.msg import Pose
-from rclpy.callback_groups import ReentrantCallbackGroup
 from rcl_interfaces.msg import ParameterDescriptor
-
-import argparse
-import os
 import sys
 import struct
-import wave
 from threading import Thread
-
 from picovoice import *
 from pvrecorder import PvRecorder
-
 import ament_index_python
 
 class PicovoiceDemo(Thread):
@@ -126,7 +109,7 @@ class Listen(Node):
             self.pub_voice_command.publish(self.voice_command)
 
         else:
-            print("Didn't understand the command.\n")
+            print("I didn't understand the command.\n")
 
     def run(self):
         recorder = None
